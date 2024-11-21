@@ -1,0 +1,21 @@
+body {
+  background-color: black;
+  
+}
+button {
+  height: 62px;
+  width: 62px;
+  border-radius: 50%;
+  margin-right: 3px;
+  color: white;
+  background-color: rgb(51, 51, 51);
+  border: none;
+  font-size: 25px; 
+  font-weight: bold;
+}
+.orange {
+  background-color: rgb(254, 160, 10);
+}
+.clear {
+  font-size: 17px;
+}
