@@ -32,8 +32,14 @@ img {
   background-color: transparent;
   cursor: pointer;
 }
-.rps-reset-btn {
+#rps-reset-btn {
   padding: 10px;
   font-size: 1.6rem;
   cursor: pointer;
+}
+.rps-text {
+  font-size: 2rem;
+}
+.rps-result-img {
+  height: 6rem;
 }
