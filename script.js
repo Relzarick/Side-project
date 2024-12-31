@@ -94,3 +94,4 @@ btn.forEach((btn, index) => {
 // make the index === string
 
 reset.addEventListener("click", resetGame);
+
