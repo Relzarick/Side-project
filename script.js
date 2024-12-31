@@ -17,7 +17,7 @@ const pickComputerMove = () => {
   } else if (randomNumber >= 1 / 3 && randomNumber < 2 / 3) {
     computerMove = "paper";
   } else if (randomNumber >= 2 / 3 && randomNumber <= 1) {
-    computerMove = "Scissors";
+    computerMove = "scissors";
   }
   return computerMove;
 };
@@ -38,7 +38,7 @@ const playGame = (playerMove) => {
       result = "you lose.";
     } else if (computerMove === "paper") {
       result = " you win.";
-    } else if (computerMove === "Scissors") {
+    } else if (computerMove === "scissors") {
       result = "tie.";
     }
   } else if (playerMove === 1) {
@@ -46,7 +46,7 @@ const playGame = (playerMove) => {
       result = "you win.";
     } else if (computerMove === "paper") {
       result = " tie.";
-    } else if (computerMove === "Scissors") {
+    } else if (computerMove === "scissors") {
       result = "you lose.";
     }
   } else if (playerMove === 0) {
@@ -54,7 +54,7 @@ const playGame = (playerMove) => {
       result = "tie.";
     } else if (computerMove === "paper") {
       result = "you lose.";
-    } else if (computerMove === "Scissors") {
+    } else if (computerMove === "scissors") {
       result = "you win.";
     }
   }
@@ -94,4 +94,3 @@ btn.forEach((btn, index) => {
 // make the index === string
 
 reset.addEventListener("click", resetGame);
-
