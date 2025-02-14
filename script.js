@@ -95,11 +95,13 @@ btn.forEach((btn, index) => {
 
 reset.addEventListener("click", resetGame);
 
+// !
+
 let price = 1.87;
-// penny = one cent
-// nickle = five cents
-// dime = 10 cents
-// quarter = 25 cents
+// ? penny = one cent
+// ? nickle = five cents
+// ? dime = 10 cents
+// ? quarter = 25 cents
 
 let cid = [
   ["PENNY", 1.01],
@@ -119,6 +121,9 @@ const changeDisplay = document.getElementById("change-due");
 const drawerDisplay = document.getElementById("change-container");
 // console.log(cid);
 
+let changeDisplayDenominations = [];
+let assignDenominations = {};
+
 let changeOnHand =
   Number(cid.reduce((acc, curVal) => acc + curVal[1], 0).toFixed(2)) * 100;
 //console.log(changeOnHand);
@@ -136,34 +141,26 @@ const check = () => {
     alert("Customer does not have enough money to purchase the item");
   } else if (cashGiven === priceInCents) {
     cal(changeDue, cashGiven);
-    changeDisplay.style.display = "flex";
-    changeDisplay.textContent = "No change due - customer paid with exact cash";
-    updateUi();
+    updateUi(0);
   } else if (changeDue > changeOnHand || !checkDenom(changeDue)) {
-    changeDisplay.style.display = "flex";
-    changeDisplay.innerHTML = "Status: INSUFFICIENT_FUNDS";
+    updateUi(1);
   } else {
     cal(changeDue, cashGiven);
-    changeDisplay.style.display = "flex";
-    changeDisplay.innerHTML = "Status: OPEN";
-    updateUi();
+    updateUi(2);
   }
 };
 
-// changeDisplay.innerHTML = "Status: INSUFFICIENT_FUNDS";
-//         return;
-
 const checkDenom = (changeDue) => {
-  // used to check the array without modifying the original
+  // * used to check the array without modifying the original
   const tempArrayOrderReversed = [...arrayOrderReversed];
 
   for (let i = 0; i < tempArrayOrderReversed.length; i++) {
-    // the second condition checks if current arrOrderReversed has enough value to match centsArray
+    // * the second condition checks if current arrOrderReversed has enough value to match centsArray
     while (
       changeDue >= centsArray[i] &&
       tempArrayOrderReversed[i] >= centsArray[i]
     ) {
-      // still have to simulate deductions if it returns true it will proceed to next else block
+      // * still have to simulate deductions if it returns true it will proceed to next else block
       changeDue -= centsArray[i];
       tempArrayOrderReversed[i] -= centsArray[i];
     }
@@ -173,10 +170,11 @@ const checkDenom = (changeDue) => {
 
 const cal = (change, cashGiven) => {
   let noChange = true;
-  //assume that no changes will be made unless proven otherwise within the iteration
+  changeDisplayDenominations = [];
+  // * assume that no changes will be made unless proven otherwise within the iteration
 
   if (cashGiven === 187) {
-    // let doladola = cashGiven; (param are mutable)
+    // ! let doladola = cashGiven; (param are mutable)
     while (cashGiven > 0) {
       noChange = true;
       for (let i = 0; i < centsArray.length; i++) {
@@ -186,6 +184,7 @@ const cal = (change, cashGiven) => {
         ) {
           cashGiven -= centsArray[i];
           updateCid(i, centsArray[i]);
+          changeDisplayDenominations.push(centsArray[i]);
           noChange = false;
           break;
         }
@@ -205,8 +204,11 @@ const cal = (change, cashGiven) => {
       ) {
         change -= centsArray[i];
         updateCid(i, centsArray[i]);
-        // break is used to exit the innder for loop first, restarting the while loop
-        //used to exit early after highest val is deducted, ensuring highest value is deducted first
+        // * break is used to exit the innder for loop first, restarting the while loop
+        // * used to exit early after highest val is deducted, ensuring highest value is deducted first
+        changeDisplayDenominations.push(centsArray[i]);
+        //console.log(changeDisplayDenominations);
+
         noChange = false;
         break;
       }
@@ -221,7 +223,7 @@ const cal = (change, cashGiven) => {
 };
 
 const updateCid = (index, cash) => {
-  // cents array index, to locate current value to update cid
+  // * cents array index, to locate current value to update cid
   cid[cid.length - 1 - index][1] =
     Math.round(cid[cid.length - 1 - index][1] * 100 - cash) / 100;
   changeOnHand -= cash;
@@ -229,7 +231,46 @@ const updateCid = (index, cash) => {
   //console.log(cid);
 };
 
-const updateUi = () => {
+const updateDenominationsUi = () => {
+  assignDenominations = {};
+
+  const denominations = {
+    10000: "ONE HUNDRED",
+    2000: "TWENTY",
+    1000: "TEN",
+    500: "FIVE",
+    100: "ONE",
+    25: "QUARTER",
+    10: "DIME",
+    5: "NICKEL",
+    1: "PENNY",
+  };
+  changeDisplayDenominations.forEach((val) => {
+    const key = denominations[val];
+    if (assignDenominations[key]) {
+      // * this checks if it exists, then adds it to the object
+      assignDenominations[key] += val;
+    } else {
+      // * this will run if it does not exists, adding a new value to the object
+      assignDenominations[key] = val;
+    }
+  });
+  console.log(assignDenominations);
+
+  let assignDenominationsString = "";
+  // * the for loop will loop through the object and log the key into a string
+  for (let key in assignDenominations) {
+    if (assignDenominations.hasOwnProperty(key)) {
+      assignDenominationsString += `${key}: $${
+        Math.round((assignDenominations[key] / 100) * 100) / 100
+      }<br>`;
+    }
+  }
+
+  changeDisplay.innerHTML = `Status: OPEN<br>${assignDenominationsString}`;
+};
+
+const updateUi = (stat) => {
   drawerDisplay.innerHTML = `<h2>Change in Drawer:</h2>
         <p>Pennies: $${cid[0][1]}</p>
         <p>Nickels: $${cid[1][1]}</p>
@@ -240,6 +281,17 @@ const updateUi = () => {
         <p>Tens: $${cid[6][1]}</p>
         <p>Twenties: $${cid[7][1]}</p>
         <p>Hundreds: $${cid[8][1]}</p>`;
+
+  if (stat === 0) {
+    changeDisplay.style.display = "flex";
+    changeDisplay.textContent = "No change due - customer paid with exact cash";
+  } else if (stat === 1) {
+    changeDisplay.style.display = "flex";
+    changeDisplay.innerHTML = "Status: INSUFFICIENT_FUNDS";
+  } else if (stat === 2) {
+    changeDisplay.style.display = "flex";
+    updateDenominationsUi();
+  }
 };
 
 purchaseBtn.addEventListener("click", () => {
